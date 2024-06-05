@@ -1,7 +1,11 @@
-FROM node:14-alpine
+FROM node:14 AS builder
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 COPY . .
-EXPOSE 8080
+
+FROM node:14-slim
+WORKDIR /usr/src/app
+COPY --from=builder /usr/src/app .
+EXPOSE 3000
 CMD ["node", "index.js"]
